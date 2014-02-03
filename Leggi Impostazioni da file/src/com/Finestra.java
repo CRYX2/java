@@ -14,12 +14,17 @@ public class Finestra extends JPanel{
     JMenuBar menuBar = new JMenuBar();
     JMenuItem configuraMenuItem = new JMenuItem("Configurazione");
 
-    public static final String PERCORSO = "C:\\Users\\Orion\\Desktop\\settings.txt";
+    public static final String PERCORSO = System.getProperty("user.home")+"\\settings.cnf";
 
     public Finestra() {
         menu.add(configuraMenuItem);
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
+
+        File f = new File(PERCORSO);
+        if(!f.exists() || !f.isFile()){
+            creaFile();
+        }
 
         Properties p = leggiFile();
 
@@ -60,6 +65,24 @@ public class Finestra extends JPanel{
     public static int getHeight(Properties p){
         int h = Integer.parseInt(p.getProperty("height"));
         return h;
+    }
+
+    private void creaFile(){
+        try{
+            FileOutputStream fos = new FileOutputStream(PERCORSO);
+            String s = "width:500"+String.format("%n")+"height:500";
+            try{
+                fos.write(s.getBytes());
+                fos.flush();
+                fos.close();
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
 }
